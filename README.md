@@ -1,7 +1,7 @@
 # PopulationProject
 Project for EGME 202. Use existing population data of a certain group of people to create a function to estimate future populations. 
 
-Our groups project is looking at US state populations over the last 5 years. 
+Our groups project is looking at US state populations over the last 15 years. 
 Our dataset is from the data.census.gov website and has provided an estimate 
 for the population of every individual state from 2010 to 2025. Our data came in 2 files, 
 one from 2010-2020 and another from 2020-2025. We first clean them up to only useful information,
