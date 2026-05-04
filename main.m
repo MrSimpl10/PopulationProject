@@ -1,5 +1,6 @@
 % ASSIGNEMTN: Group Population Project
 % NAME: Christopher Luecht
+% GROUP: 15
 
 % Setup for new run every time, kept crashing if ran without cleared vars
 clearvars
