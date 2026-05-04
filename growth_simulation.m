@@ -2,9 +2,6 @@
 % Christopher Luecht
 % GROUP: 15
 
-% Another function file to feduce clutter in main and to seperate major
-% parts of the project
-
 function growth_data = growth_simulation(east_west_data)
 
     % Number of years to predict
@@ -28,19 +25,23 @@ function growth_data = growth_simulation(east_west_data)
         % Population values for this region
         P = popData(i, :);
 
-        % Time values for existing data
-        t = 0:(numYears - 1);
-
-        % First and last population values
+        % First population value
         P0 = P(1);
-        Pend = P(end);
 
-        % Estimate carrying capacity, tbh i had to guess, couldnt find a
-        % reasonable estimate online
-        K = max(P) * 1.25;
+        % Estimate carrying capacity
+        K = max(P) * 1.5;
 
-        % Calculate growth/loss rate from current data
-        r = -(1 / t(end)) * log((K / Pend - 1) / (K / P0 - 1));
+        % Use only the past 5 years to calculate growth/loss rate
+        recentYears = 5;
+
+        % Population from 5 years ago
+        P_start = P(end - recentYears);
+
+        % Most recent population
+        P_end = P(end);
+
+        % Calculate r using only the past 5 years
+        r = -(1 / recentYears) * log((K / P_end - 1) / (K / P_start - 1));
 
         % Future time values
         futureT = numYears:(numYears + futureYears - 1);
