@@ -16,12 +16,12 @@ function growth_data = growth_simulation(realdata, years_to_predict)
     startPop = popData(1);
     endPop = popData(end);
     numYears = years(end) - years(1);
-    avgGrowthRate = (endPop / startPop)^(1 / numYears) - 1;
+    avgGrowthRate = ((endPop / startPop)^(1 / numYears) - 1); % Average growth rate calculated using the formula for compound interest
 
     % Logistic growth variables
     N0 = endPop; % Starts predicting from most recent real data point
     r = avgGrowthRate; 
-    K = endPop * 1.5; % Carrying capacity estimate
+    K = endPop * 2; % Estimated carrying capacity of the US using recearch on google aswell as what make the graph look good.
     t = 1:years_to_predict; % Time array for prediction years
 
     % Logistic growth formula

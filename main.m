@@ -10,7 +10,7 @@ clc
 sourcefile1 = "2010-2020Census.csv";
 sourcefile2 = "2020-2025Census.csv";
 start_year = 2010;
-years_to_predict = 10;
+years_to_predict = 15;
 
 % Analyze the data and get it into usable format
 [east_data, west_data] = analyze_data(sourcefile1, sourcefile2, start_year);
