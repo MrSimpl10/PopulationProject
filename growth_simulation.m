@@ -2,59 +2,37 @@
 % Christopher Luecht
 % GROUP: 15
 
-function growth_data = growth_simulation(east_west_data)
+% This file is responsible for predicting future population data given previous data.
+% I chose to seperate this as it is a very different task than the data cleaning and graphing.
+% It is also a lot of code that would make the main file look very cluttered.
 
-    % Number of years to predict
-    futureYears = 10;
+function growth_data = growth_simulation(realdata, years_to_predict)
 
-    % Get region names: East and West
-    regions = east_west_data(:, 1);
+    % Separate years and population data
+    years = realdata(1, :);
+    popData = double(realdata(2:end, :));
 
-    % Get population data only
-    popData = double(east_west_data(:, 2:end));
+    % Setup vars for growth sim formula
+    startPop = popData(1);
+    endPop = popData(end);
+    numYears = years(end) - years(1);
+    avgGrowthRate = (endPop / startPop)^(1 / numYears) - 1;
 
-    % Count how many years of data are already in the array
-    numYears = size(popData, 2);
+    % Logistic growth variables
+    N0 = endPop; % Starts predicting from most recent real data point
+    r = avgGrowthRate; 
+    K = endPop * 1.5; % Carrying capacity estimate
+    t = 1:years_to_predict; % Time array for prediction years
 
-    % Create array to store predicted values
-    predictedData = strings(size(popData, 1), futureYears);
+    % Logistic growth formula
+    futurePop = K ./ (1 + ((K - N0) / N0) .* exp(-r .* t));
 
-    % Loop through East and West separately
-    for i = 1:size(popData, 1)
+    % Setup to output
+    futurePop = round(futurePop); % Round to whole people
+    futureYears = (years(end) + 1):(years(end) + years_to_predict); % Future years array
 
-        % Population values for this region
-        P = popData(i, :);
-
-        % First population value
-        P0 = P(1);
-
-        % Estimate carrying capacity
-        K = max(P) * 1.5;
-
-        % Use only the past 5 years to calculate growth/loss rate
-        recentYears = 5;
-
-        % Population from 5 years ago
-        P_start = P(end - recentYears);
-
-        % Most recent population
-        P_end = P(end);
-
-        % Calculate r using only the past 5 years
-        r = -(1 / recentYears) * log((K / P_end - 1) / (K / P_start - 1));
-
-        % Future time values
-        futureT = numYears:(numYears + futureYears - 1);
-
-        % Logistic growth formula
-        futureP = K ./ (1 + ((K - P0) / P0) .* exp(-r .* futureT));
-
-        % Store rounded predictions
-        predictedData(i, :) = string(round(futureP));
-
-    end
-
-    % Append predicted values to the end of the original input array
-    growth_data = [east_west_data predictedData];
+    % Output real data plus predicted data in full format
+    format long g % Use long format to avoid scientific notation
+    growth_data = [futureYears; futurePop];
 
 end

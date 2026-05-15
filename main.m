@@ -1,63 +1,59 @@
 % ASSIGNEMTN: Group Population Project
 % NAME: Christopher Luecht
-% GROUP: 15
+% GROUP: Population Pros
 
 % Setup for new run every time, kept crashing if ran without cleared vars
 clearvars
 clc
 
-% Define what inital data files we want to use
+% Define initial info for program
 sourcefile1 = "2010-2020Census.csv";
 sourcefile2 = "2020-2025Census.csv";
-
-% Use external function files to get our full, clean, predicted data
-east_west_data = analyze_data(sourcefile1, sourcefile2);
-growth_data = growth_simulation(east_west_data);
-
-% What year our data starts from and how many we want to predict after the
-% end of the data, used to number the graph
 start_year = 2010;
-num_predicted = 10;
+years_to_predict = 10;
 
-% Seperate east_west array into many smaller, easier to manipulate arrays
-eastPop = double(growth_data(1, 2:end));
-westPop = double(growth_data(2, 2:end));
+% Analyze the data and get it into usable format
+[east_data, west_data] = analyze_data(sourcefile1, sourcefile2, start_year);
 
-num_total = length(eastPop);
-num_real = num_total - num_predicted;
+% Create prediction data
+east_predictions = growth_simulation(east_data, years_to_predict);
+west_predictions = growth_simulation(west_data, years_to_predict);
 
-east_real = eastPop(1:num_real);
-west_real = westPop(1:num_real);
+% Separate real data for graphing
+real_years = east_data(1, :);
+east_real = east_data(2, :);
+west_real = west_data(2, :);
 
-east_predicted = eastPop(num_real + 1:end);
-west_predicted = westPop(num_real + 1:end);
-
-% Our dataset doesent include year tags to we make them right here, also
-% used for solid vs dashed line
-real_years = start_year:(start_year + num_real - 1);
-predicted_years = (start_year + num_real):(start_year + num_total - 1);
-
+% Separate predicted data for graphing
+predicted_years = east_predictions(1, :);
+east_predicted = east_predictions(2, :);
+west_predicted = west_predictions(2, :);
 
 % Make the graph
 figure;
 
+% Plot all data using different line styles and colors to differentiate them
 plot(real_years, east_real, 'r-o', 'LineWidth', 2); % east_real years are solid red
-hold on;
-
+hold on; % Hold on to plot everything on one graph
 plot(real_years, west_real, 'b-o', 'LineWidth', 2); % west_real years are solid blue
-
 plot(predicted_years, east_predicted, 'r--o', 'LineWidth', 2); % east_predicted years are dashed red
-
 plot(predicted_years, west_predicted, 'b--o', 'LineWidth', 2); % west_predicted years are dashed blue
 
+% Setup axis and title
 title("East vs West Population Growth"); 
 xlabel("Year");
 ylabel("Population");
 
+% Format y axis to prevent scientific notation and add commas for readability, did research and this is the best way I could find to do it in matlab, not super readable but it works
+ax = gca;
+ax.YAxis.Exponent = 0;
+ytickformat('%,.0f')
+
+% Create Legend to understand graph
 legend("East Real", "West Real", ...
     "East Predicted", "West Predicted", ...
     "Location", "best");
 
+% finish graph formatting
 grid on;
 hold off;
-
